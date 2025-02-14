@@ -70,7 +70,7 @@ public class UserDAO implements IDAO<UserDTO, String>{
 
     @Override
     public UserDTO readByID(String id) {
-        String sql = "SELECT * FROM [tblUsers] WHERE [userID] = N'" + id + "'\"";
+        String sql = "SELECT * FROM tblUsers WHERE [userID] = N'" + id + "'";
         try {
             Connection conn = DBUtils.getConnection();
             Statement st = conn.createStatement();
