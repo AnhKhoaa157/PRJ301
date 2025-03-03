@@ -14,7 +14,7 @@
     </head>
     <body> 
         <div style="min-height: 500px; padding: 10px">
-            <%                UserDTO user = (UserDTO) request.getAttribute("user");
+            <%                UserDTO user = (UserDTO) session.getAttribute("user");
             %>
             <h1> Welcome <%=user.getName()%> </h1>
             <form action="MainController">

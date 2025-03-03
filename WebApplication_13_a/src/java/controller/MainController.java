@@ -11,14 +11,15 @@ import dto.BookDTO;
 import dto.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.List;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.AuthUtils;
 
 /**
  *
@@ -31,32 +32,54 @@ public class MainController extends HttpServlet {
 
     private static final String LOGIN_PAGE = "login.jsp";
 
-    public UserDTO getUser(String strUserID) {
-        UserDAO udao = new UserDAO();
-        UserDTO user = udao.readById(strUserID);
-        return user;
-    }
 
-    public boolean isValidLogin(String strUserID, String strPassword) {
-        UserDTO user = getUser(strUserID);
-        System.out.println(user);
-//        System.out.println(user.getPassword());
-        System.out.println(strPassword);
-        return user != null && user.getPassword().equals(strPassword);
-    }
-
-    public void search(HttpServletRequest request, HttpServletResponse response)
+    private String processLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String searchTerm = request.getParameter("searchTerm");
-        if (searchTerm == null) {
-            searchTerm = "";
+        String url = LOGIN_PAGE;
+        String strUserID = request.getParameter("txtUserID");
+        String strPassword = request.getParameter("txtPassword");
+        if (AuthUtils.isValidLogin(strUserID, strPassword)) {
+            url = "search.jsp";
+            UserDTO user = AuthUtils.getUser(strUserID);
+            request.getSession().setAttribute("user", user);
+
+            // search
+            processSearch(request, response);
+        } else {
+            request.setAttribute("message", "Incorrect UserID or Password");
+            url = "login.jsp";
         }
-        List<BookDTO> books = bookDAO.searchByTitle2(searchTerm);
-        request.setAttribute("books", books);
-        request.setAttribute("searchTerm", searchTerm);
+        return url;
     }
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    private String processLogout(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if(AuthUtils.isLoggedIn(session)){
+            request.getSession().invalidate();
+            url = "login.jsp";
+        }
+        return url;
+    }
+
+    public String processSearch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if(AuthUtils.isLoggedIn(session)){
+            String searchTerm = request.getParameter("searchTerm");
+            if(searchTerm == null){
+                searchTerm=" ";
+            }
+            List<BookDTO> books = bookDAO.searchByTitle2("searchTerm");
+            request.setAttribute("books", books);
+            request.setAttribute("searchTerm", searchTerm);
+        }
+        return url;
+    }
+
+    protected String processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = LOGIN_PAGE;
@@ -67,47 +90,13 @@ public class MainController extends HttpServlet {
                 url = LOGIN_PAGE;
             } else {
                 if (action.equals("login")) {
-                    String strUserID = request.getParameter("txtUserID");
-                    String strPassword = request.getParameter("txtPassword");
-                    if (isValidLogin(strUserID, strPassword)) {
-                        url = "search.jsp";
-                        UserDTO user = getUser(strUserID);
-                        request.getSession().setAttribute("user", user);
-
-                        // search
-                        search(request, response);
-                    } else {
-                        request.setAttribute("message", "Incorrect UserID or Password");
-                        url = "login.jsp";
-                    }
+                    url = processLogin(request, response);
                 } else if (action.equals("logout")) {
-                    HttpSession session = request.getSession();
-                    if(session.getAttribute("user") != null){
-                        request.getSession().invalidate();
-                        url = "login.jsp";
-                    }
-
+                    url = processLogout(request, response);
                 } else if (action.equals("search")) {
-
-                    HttpSession session = request.getSession();
-                    if(session.getAttribute("user") != null){
-                        // search
-                        search(request, response);
-                        url = "search.jsp";
-                    }
-                    
+                    url = processSearch(request, response);        
                 } else if (action.equals("delete")) {
-                    HttpSession session = request.getSession();
-                    if(session.getAttribute("user") != null){
-                        UserDTO user = (UserDTO)session.getAttribute("user");
-                        if(user.getRoleID().equals("AD")){
-                            String id = request.getParameter("id");
-                            bookDAO.updateQuantityToZero(id);
-                            // search
-                            search(request, response);
-                            url = "search.jsp";
-                        }
-                    }
+
                 } else if (action.equals("add")) {
                     HttpSession session = request.getSession();
                     if(session.getAttribute("user") != null){

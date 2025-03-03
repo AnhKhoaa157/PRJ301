@@ -6,7 +6,9 @@
 package controller;
 
 import dao.UserDAO;
+import dao.startupProjectDAO;
 import dto.UserDTO;
+import dto.startupProjectDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -17,6 +19,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import utils.AuthUtils;
 
 /**
  *
@@ -26,29 +30,53 @@ import javax.servlet.http.HttpServletResponse;
 public class MainController extends HttpServlet {
     private static final String LOGIN_PAGE = "login.jsp";
     
-    public UserDTO getUser(String strUserName) {
-        UserDAO udao = new UserDAO();
-        UserDTO user = udao.readByID(strUserName);
-        return user;
-    }
-    public boolean isValidLogin(String strUserName, String strPassword){
-        UserDTO user = getUser(strUserName);
-        System.out.println(user);
-        System.out.println(strPassword);
-        return user != null && user.getPassword().equals(strPassword);
+    private startupProjectDAO spDAO = new startupProjectDAO();
+    
+    private String processLogin (HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url=LOGIN_PAGE;
+        String strUserName = request.getParameter("txtUserName");
+        String strPassword = request.getParameter("txtPassword");
+        if(AuthUtils.isValidLogin(strUserName, strPassword)){
+            url="dashboard.jsp";
+            UserDTO user = AuthUtils.getUser(strUserName);
+            request.getSession().setAttribute("user",user); 
+            
+            //Search
+            processSearch(request, response);
+        } else {
+            request.setAttribute("message", "Incorrect UserID or Password");
+            url="login.jsp";  
+        }
+        return url;
     }
     
-//    public void search(HttpServletRequest request, HttpServletResponse response)
-//        throws ServletException, IOException {
-//        String searchTerm = request.getParameter("searchTerm");
-//        if (searchTerm == null) {
-//            searchTerm = "";
-//        }
-//        List<BookDTO> books = bookDAO.searchByTitle2(searchTerm);
-//        request.setAttribute("books", books);
-//        request.setAttribute("searchTerm", searchTerm);
-//    }
+    private String processLogout(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if(AuthUtils.isLoggedIn(session)){
+            request.getSession().invalidate();
+            url = "login.jsp";
+        }
+        return url;
+    }
     
+    public String processSearch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if(AuthUtils.isLoggedIn(session)){
+            String searchTerm = request.getParameter("searchTerm");
+            if(searchTerm == null){
+                searchTerm = "";
+            }
+            List<startupProjectDTO> projects = spDAO.searchByProjectID(searchTerm);
+            request.setAttribute("projects", projects);
+            request.setAttribute("searchTerm", searchTerm);
+        }
+        return url;
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -60,22 +88,11 @@ public class MainController extends HttpServlet {
                 url = LOGIN_PAGE;
             } else {
                 if(action.equals("login")){
-                    String strUserName = request.getParameter("txtUserName");
-                    String strPassword = request.getParameter("txtPassword");
-                    if(isValidLogin(strUserName, strPassword)){
-                        url="dashboard.jsp";
-                        UserDTO user = getUser(strUserName);
-                        request.setAttribute("user",user);
-                        
-                    } else {
-                        request.setAttribute("message", "Incorrect UserID or Password");
-                        url="login.jsp";  
-                    }
+                    url = processLogin(request, response);
                 } else  if (action.equals("logout")) {
-                    request.getSession().invalidate(); // Hủy bỏ session
-                    url = "login.jsp";
+                    url = processLogout(request, response);
                 } else if (action.equals("search")){
-                    
+                    url = processSearch(request, response);
                 }
             } 
         } catch (Exception e) {

@@ -4,6 +4,7 @@
     Author     : tungi
 --%>
 
+<%@page import="utils.AuthUtils"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.List"%>
 <%@page import="dto.BookDTO"%>
@@ -161,7 +162,7 @@
             <%@include file="header.jsp" %>
             <div style="min-height: 500px; padding: 10px">
                 <%                if (session.getAttribute("user") != null) {
-                        UserDTO user = (UserDTO) session.getAttribute("user");
+                            UserDTO user = (UserDTO) session.getAttribute("user");
                 %>              
                 <%
                     String searchTerm = request.getAttribute("searchTerm")+"";
@@ -175,15 +176,12 @@
                         <input type="submit" value="Search" class="search-btn"/>
                     </form>
                 </div>
-                <%  if(session.getAttribute("user") != null){
-                      UserDTO user1 = (UserDTO)session.getAttribute("user");
-                      if(user1.getRoleID().equals("AD")){
+                <%  if(AuthUtils.isAdmin(session)){ 
                 %>
                 <a href="bookForm.jsp" class="add-btn">
                     Add New Book
                 </a>
-                <%}
-                    }%>
+                <%}%>
                 <%
                     if (request.getAttribute("books") != null) {
                         List<BookDTO> books = (List<BookDTO>) request.getAttribute("books");
@@ -211,9 +209,13 @@
                             <td><%=b.getPublishYear()%></td>
                             <td><%=b.getPrice()%></td>
                             <td><%=b.getQuantity()%></td>
+                            <%
+                                if(AuthUtils.isAdmin(session)){
+                            %>
                             <td><a href="MainController?action=delete&id=<%=b.getBookID()%>&searchTerm=<%=searchTerm%>">
                                 <img src="image/delete-icon.png" style="height: 25px"/>
                                 </a></td>
+                            <%}%>
                         </tr>
                         <%
                             }

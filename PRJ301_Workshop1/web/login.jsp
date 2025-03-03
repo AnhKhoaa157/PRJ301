@@ -10,6 +10,7 @@
     <head>
         <style>
             body {
+                background-image: url('images/z6356433591562_7559b4a02068fdc71cf79b652c3e79ba-processed(lightpdf.com).jpg');
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
                 display: flex;
@@ -30,7 +31,7 @@
 
             .Login-Title {
                 margin-bottom: 20px;
-                color: #333;
+                color: yellow;
             }
 
             .form-group {
@@ -48,6 +49,7 @@
             input[type="password"] {
                 width: 100%;
                 padding: 8px;
+                margin-right: 10px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 font-size: 14px;

@@ -4,6 +4,7 @@
     Author     : LENOVO
 --%>
 
+<%@page import="utils.AuthUtils"%>
 <%@page import="dto.UserDTO"%>
 <%@page import="dto.BookDTO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -165,9 +166,9 @@
     <body>
         <jsp:include page="header.jsp"/>
         <div class="page-content">
-            <% if(session.getAttribute("user") != null) {
+            <% if(AuthUtils.isLoggedIn(session)) {
                 UserDTO user = (UserDTO)session.getAttribute("user");
-                if(user.getRoleID().equals("AD")){
+                if(AuthUtils.isAdmin(session)){
             %>
             <%
                 BookDTO book = new BookDTO();

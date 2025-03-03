@@ -8,6 +8,7 @@ package dao;
 import dto.startupProjectDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +75,37 @@ public class startupProjectDAO implements IDAO<startupProjectDTO, String>{
         try{
             Connection conn = DBUtils.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+            ps.setString(1, "%" + searchTerm + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                startupProjectDTO sp = new startupProjectDTO(
+                        rs.getInt("ProjectID"),
+                        rs.getString("ProjectName"),
+                        rs.getString("Description"),
+                        rs.getString("Status"),
+                        rs.getDate("Estimated Launch"));
+                list.add(sp);
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
         }
         return list;
+    }
+    
+    public boolean updateProject(String id){
+        String sql = "DELETE FROM [tblStartupProjects] WHERE [Username] = ?";
+        Connection conn;
+        try{
+            conn = DBUtils.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, id);
+            int n = ps.executeUpdate();
+            return n>0;
+        } catch (SQLException ex) {
+                Logger.getLogger(startupProjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+                Logger.getLogger(startupProjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }
