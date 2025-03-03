@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlet;
+package controller;
 
 import dao.BookDAO;
 import dao.UserDAO;
@@ -11,7 +11,6 @@ import dto.BookDTO;
 import dto.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,13 +25,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
+
     private BookDAO bookDAO = new BookDAO();
-    
+
     private static final String LOGIN_PAGE = "login.jsp";
 
     public UserDTO getUser(String strUserID) {
         UserDAO udao = new UserDAO();
-        UserDTO user = udao.readByID(strUserID);
+        UserDTO user = udao.readById(strUserID);
         return user;
     }
 
@@ -43,98 +43,90 @@ public class MainController extends HttpServlet {
         System.out.println(strPassword);
         return user != null && user.getPassword().equals(strPassword);
     }
-    
-//    public void search(HttpServletRequest request, HttpServletResponse response)
-//        throws ServletException, IOException {
-//        String searchTerm = request.getParameter("searchTerm");
-//        if (searchTerm == null) {
-//            searchTerm = "";
-//        }
-//        List<BookDTO> books = bookDAO.searchByTitle2(searchTerm);
-//        request.setAttribute("books", books);
-//        request.setAttribute("searchTerm", searchTerm);
-//    }
-    
+
+    public void search(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String searchTerm = request.getParameter("searchTerm");
+        if (searchTerm == null) {
+            searchTerm = "";
+        }
+        List<BookDTO> books = bookDAO.searchByTitle2(searchTerm);
+        request.setAttribute("books", books);
+        request.setAttribute("searchTerm", searchTerm);
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = LOGIN_PAGE;
         try {
             String action = request.getParameter("action");
-            System.out.println("action: "+ action);
+            System.out.println("action: " + action);
             if (action == null) {
                 url = LOGIN_PAGE;
             } else {
                 if (action.equals("login")) {
                     String strUserID = request.getParameter("txtUserID");
                     String strPassword = request.getParameter("txtPassword");
-                    if(isValidLogin(strUserID, strPassword)){
-                        url ="search.jsp";
+                    if (isValidLogin(strUserID, strPassword)) {
+                        url = "search.jsp";
                         UserDTO user = getUser(strUserID);
                         request.getSession().setAttribute("user", user);
-                    }else{
+
+                        // search
+                        search(request, response);
+                    } else {
                         request.setAttribute("message", "Incorrect UserID or Password");
-                        url ="login.jsp";
+                        url = "login.jsp";
                     }
-                }else  if (action.equals("logout")) {
+                } else if (action.equals("logout")) {
                     request.getSession().invalidate(); // Hủy bỏ session
                     url = "login.jsp";
-                }else  if (action.equals("search")) {
-                    BookDAO bdao = new BookDAO();
-                    String searchTerm = request.getParameter("searchTerm");
-                    List<BookDTO> books = bdao.searchByTitle2(searchTerm);
-                    request.setAttribute("books", books);
-                    request.setAttribute("searchTerm", searchTerm);
-                    url = "search.jsp";
-                }else  if (action.equals("delete")) {
-                    BookDAO bdao = new BookDAO();
-                    String id = request.getParameter("id");
-                    bdao.updateQuantityToZero(id);
+                } else if (action.equals("search")) {
                     // search
-                    String searchTerm = request.getParameter("searchTerm");
-                    List<BookDTO> books = bdao.searchByTitle2(searchTerm);
-                    request.setAttribute("books", books);
-                    request.setAttribute("searchTerm", searchTerm);
+                    search(request, response);
                     url = "search.jsp";
-                }else if (action.equals("add")){
-                    try{
+                } else if (action.equals("delete")) {
+                    String id = request.getParameter("id");
+                    bookDAO.updateQuantityToZero(id);
+                    // search
+                    search(request, response);
+                    url = "search.jsp";
+                } else if (action.equals("add")) {
+                    try {
                         boolean checkError = false;
-                        
+
                         String bookID = request.getParameter("txtBookID");
                         String title = request.getParameter("txtTitle");
                         String author = request.getParameter("txtAuthor");
                         int publishYear = Integer.parseInt(request.getParameter("txtPublishYear"));
                         double price = Double.parseDouble(request.getParameter("txtPrice"));
                         int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
-                        
-                        if(bookID == null || bookID.trim().isEmpty()){
+
+                        if (bookID == null || bookID.trim().isEmpty()) {
                             checkError = true;
                             request.setAttribute("txtBookID_error", "Book ID cannot be empty.");
                         }
-                        
-                        if(quantity < 0){
+
+                        if (quantity < 0) {
                             checkError = true;
-                            request.setAttribute("txtQuantity_error", "Quantity >=0");
+                            request.setAttribute("txtQuantity_error", "Quantity >=0.");
                         }
-                        
+
                         BookDTO book = new BookDTO(bookID, title, author, publishYear, price, quantity);
-                        
+
                         if (!checkError) {
                             bookDAO.create(book);
                             // search
-                            BookDAO bdao = new BookDAO();
-                            String searchTerm = request.getParameter("searchTerm");
-                            List<BookDTO> books = bdao.searchByTitle2(searchTerm);
-                            request.setAttribute("books", books);
-                            request.setAttribute("searchTerm", searchTerm);
+                            search(request, response);
                             url = "search.jsp";
                         } else {
                             url = "bookForm.jsp";
                             request.setAttribute("book", book);
                         }
-                    } catch (Exception e){
-                        
+                    } catch (Exception e) {
                     }
+
                 }
             }
         } catch (Exception e) {
