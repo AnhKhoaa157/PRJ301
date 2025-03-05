@@ -32,7 +32,7 @@ public class AuthUtils {
     }
     
     public static boolean isLoggedIn(HttpSession session){
-        return session.getAttribute("User") != null;
+        return session.getAttribute("user") != null;
     }
     
     public static boolean isFounder(HttpSession session){

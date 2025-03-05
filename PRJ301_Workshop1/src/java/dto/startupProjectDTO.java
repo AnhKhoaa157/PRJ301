@@ -12,7 +12,7 @@ import java.sql.Date;
  * @author LENOVO
  */
 public class startupProjectDTO {
-    private int projectID;
+    private int projectId;
     private String projectName;
     private String description;
     private String status;
@@ -21,20 +21,20 @@ public class startupProjectDTO {
     public startupProjectDTO() {
     }
 
-    public startupProjectDTO(int projectID, String projectName, String description, String status, Date estimatedLaunch) {
-        this.projectID = projectID;
+    public startupProjectDTO(int projectId, String projectName, String description, String status, Date estimatedLaunch) {
+        this.projectId = projectId;
         this.projectName = projectName;
         this.description = description;
         this.status = status;
         this.estimatedLaunch = estimatedLaunch;
     }
 
-    public int getProjectID() {
-        return projectID;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setProjectID(int projectID) {
-        this.projectID = projectID;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public String getProjectName() {
@@ -58,7 +58,7 @@ public class startupProjectDTO {
     }
 
     public void setStatus(String Status) {
-        if(status.equals("Ideation") || status.equals("Development") || status.equals("Launch") || status.equals("Scaling")){
+        if(status != null && (status.equals("Ideation") || status.equals("Development") || status.equals("Launch") || status.equals("Scaling"))){
             this.status = status;
         } else {
             throw new IllegalArgumentException("Invalid status value");

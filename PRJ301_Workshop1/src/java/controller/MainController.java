@@ -29,7 +29,7 @@ import utils.AuthUtils;
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
     private static final String LOGIN_PAGE = "login.jsp";
-    
+    private static final String DASHBOARD_PAGE = "dashboard.jsp";
     private startupProjectDAO spDAO = new startupProjectDAO();
     
     private String processLogin (HttpServletRequest request, HttpServletResponse response)
@@ -62,6 +62,7 @@ public class MainController extends HttpServlet {
         return url;
     }
     
+    //Need to be fix or wrong logic
     public String processSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = LOGIN_PAGE;
@@ -70,11 +71,34 @@ public class MainController extends HttpServlet {
             String searchTerm = request.getParameter("searchTerm");
             if(searchTerm == null){
                 searchTerm = "";
+            } else {
+                searchTerm = searchTerm.trim();
             }
-            List<startupProjectDTO> projects = spDAO.searchByProjectID(searchTerm);
+            url = "dashboard.jsp";
+            List<startupProjectDTO> projects = spDAO.searchByProjectName(searchTerm);
             request.setAttribute("projects", projects);
             request.setAttribute("searchTerm", searchTerm);
         }
+        return url;
+    }
+    
+    public String processDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if(AuthUtils.isFounder(session)){
+            String id = request.getParameter("name");
+            spDAO.deleteProject(id);
+            //search for delete
+            processSearch(request, response);
+            url="dashboard.jsp";
+        }
+        return url;
+    }
+    
+    public String processAdd(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = LOGIN_PAGE;
         return url;
     }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -93,6 +117,10 @@ public class MainController extends HttpServlet {
                     url = processLogout(request, response);
                 } else if (action.equals("search")){
                     url = processSearch(request, response);
+                } else if (action.equals("delete")){
+                    url = processDelete(request, response);
+                } else if (action.equals("add")){
+                    
                 }
             } 
         } catch (Exception e) {
