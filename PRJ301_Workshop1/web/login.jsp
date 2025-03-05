@@ -13,13 +13,19 @@
                 background-image: url('images/z6356433591562_7559b4a02068fdc71cf79b652c3e79ba-processed(lightpdf.com).jpg');
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
-                display: flex;
                 justify-content: center;
                 align-items: center;
                 height: 100vh;
                 margin: 0;
             }
-
+            
+            .login-container {
+                min-height: 600px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
             .login-form {
                 background: white;
                 padding: 30px;
@@ -27,6 +33,7 @@
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 width: 300px;
                 text-align: center;
+                padding: 20px;
             }
 
             .Login-Title {
@@ -80,28 +87,30 @@
     </head>
     <body>
         
-            
-            <form action="MainController" method="post">
-                <h2 class="Login-Title">Đăng Nhập</h2>
-                <div class="login-form">
-                    <input type="hidden" name="action" id="action" value="login"/>
-                    <div class="form-group">
-                        <label for="userid">Tên Đăng Nhập</label>
-                        <input type="text" name="txtUserName" id="username" required/> 
+
+            <div class="login-container">
+                <form action="MainController" method="post">
+                    <h2 class="Login-Title">Đăng Nhập</h2>
+                    <div class="login-form">
+                        <input type="hidden" name="action" id="action" value="login"/>
+                        <div class="form-group">
+                            <label for="userid">Tên Đăng Nhập</label>
+                            <input type="text" name="txtUserName" id="username" required/> 
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Mật Khẩu</label>
+                            <input type="password" name="txtPassword" id="password" required/> 
+                        </div>
+                        <button type="submit" class="submit-btn">Đăng nhập</button>
+                        <%
+                            String message = request.getAttribute("message")+"";
+                        %>
+                        <%=message.equals("null")?"":message%>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Mật Khẩu</label>
-                        <input type="password" name="txtPassword" id="password" required/> 
-                    </div>
-                    <button type="submit" class="submit-btn">Đăng nhập</button>
-                    <%
-                        String message = request.getAttribute("message")+"";
-                    %>
-                    <%=message.equals("null")?"":message%>
-                </div>
-            </form>
-            
+                </form>
+            </div>
+            <%@include file="footer.jsp"%>
             
         
     </body>

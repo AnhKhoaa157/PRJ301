@@ -126,7 +126,6 @@ public class MainController extends HttpServlet {
                         }
                     } catch (Exception e) {
                     }
-
                 }
             }
         } catch (Exception e) {

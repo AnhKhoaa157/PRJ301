@@ -61,6 +61,6 @@ INSERT INTO tblStartupProjects (project_name, Description, Status, estimated_lau
 ('AgriTech Pro', 'Ung dung AI toi uu san xuat nong nghiep.', 'Development', '2025-11-05'),
 ('CryptoSecure', 'Vi dien tu blockchain an toan.', 'Launch', '2025-07-30'),
 ('FoodieGo', 'App giao do an thong minh.', 'Scaling', '2025-09-20'),
-('FitTrack', 'Ung dung theo doi suc khoe ca nhan.', 'Ideation', '2026-01-15'),
+('FitTrack', 'Ung dung theo doi suc khoe ca nhan1.', 'Ideation', '2026-01-15'),
 ('JobMatch', 'Nen tang ket noi nha tuyen dung va ung vien.', 'Development', '2025-10-25'),
-('SmartRetail', 'He thong quan ly ban le tu dong.', 'Launch', '2025-08-05');
+('SmartRetail', 'He thong quan ly ban le tu11 dong.', 'Launch', '2025-08-05');

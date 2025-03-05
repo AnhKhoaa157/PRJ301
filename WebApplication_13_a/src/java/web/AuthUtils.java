@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utils;
+package web;
 
 import dao.UserDAO;
 import dto.UserDTO;

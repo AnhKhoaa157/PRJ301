@@ -16,14 +16,7 @@
                 padding: 0;
                 text-align: left;
             }
-            .container {
-                width: 50%;
-                margin: 50px auto;
-                background: white;
-                padding: 20px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                border-radius: 8px;
-            }
+            
             h1 {
                 color: #333;
             }
@@ -100,6 +93,7 @@
         </style>
     </head>
     <body>
+        <%@include file="header.jsp"%>
         <div style="min-height: 500px; padding: 10px">
             <% 
                 UserDTO user = (session != null) ? (UserDTO) session.getAttribute("user") : null;
@@ -176,5 +170,6 @@
                 <p>You do not have permission to access this content.</p>
             <% } %>
         </div>
+        <%@include file="footer.jsp"%>
     </body>
 </html>

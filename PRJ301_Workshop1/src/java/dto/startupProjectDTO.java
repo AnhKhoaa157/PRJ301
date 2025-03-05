@@ -29,6 +29,13 @@ public class startupProjectDTO {
         this.estimatedLaunch = estimatedLaunch;
     }
 
+    public startupProjectDTO(String project_name, String description, String status, Date estimatedLaunch) {
+        this.projectName = project_name;
+        this.description = description;
+        this.status = status;
+        this.estimatedLaunch = estimatedLaunch;
+    }
+
     public int getProjectId() {
         return projectId;
     }
