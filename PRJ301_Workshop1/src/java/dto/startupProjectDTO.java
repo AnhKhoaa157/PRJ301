@@ -19,6 +19,8 @@ public class startupProjectDTO {
     private Date estimatedLaunch;
 
     public startupProjectDTO() {
+        this.projectName = "";
+        this.description = "";
     }
 
     public startupProjectDTO(int projectId, String projectName, String description, String status, Date estimatedLaunch) {
@@ -65,11 +67,7 @@ public class startupProjectDTO {
     }
 
     public void setStatus(String Status) {
-        if(status != null && (status.equals("Ideation") || status.equals("Development") || status.equals("Launch") || status.equals("Scaling"))){
-            this.status = status;
-        } else {
-            throw new IllegalArgumentException("Invalid status value");
-        }
+        this.status = status;
     }
 
     public Date getEstimatedLaunch() {

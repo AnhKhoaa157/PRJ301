@@ -17,6 +17,8 @@
         <style>
             body {
                 background-image: url("images/1000_F_252870650_q7DFTNMjW5cstLOAgbdF09y3bVovJRgz.jpg");
+                background-size: cover;
+                background-position: center;
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
                 margin: 0;

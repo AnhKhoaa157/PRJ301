@@ -35,22 +35,21 @@ INSERT INTO tblUsers (Username, Name, Password, Role) VALUES
 ('founder04', 'Pham Hoang Nam', 'securepass', 'Founder'),
 ('founder05', 'Doan Ngoc Son', 'son123', 'Founder'),
 
--- 15 Team Member
-('team01', 'Vu Duc Hieu', 'hieu789', 'Team Member'),
-('team02', 'Bui Tien Dung', 'dung@123', 'Team Member'),
-('team03', 'Ngo Thanh Phong', 'phong456', 'Team Member'),
-('team04', 'Pham Quang Huy', 'huyhuy', 'Team Member'),
-('team05', 'Tran Dinh Bao', 'baobao', 'Team Member'),
-('team06', 'Nguyen Thi Mai', 'mai123', 'Team Member'),
-('team07', 'Le Hoang Anh', 'hoanganh', 'Team Member'),
-('team08', 'Vu Hong Son', 'sonson', 'Team Member'),
-('team09', 'Pham Bao Chau', 'chauchau', 'Team Member'),
-('team10', 'Tran Van Hung', 'hung456', 'Team Member'),
-('team11', 'Nguyen Thanh Tam', 'tam789', 'Team Member'),
-('team12', 'Do Hoai Nam', 'namnam', 'Team Member'),
-('team13', 'Bui Van Tuan', 'tuan000', 'Team Member'),
-('team14', 'Vo Ngoc Linh', 'linhlinh', 'Team Member'),
-('team15', 'Ly Dinh Khoa', 'khoa789', 'Team Member');
+-- 14 Team Member
+('member1', 'Vu Duc Hieu', '123456', 'Team Member'),
+('member2', 'Bui Tien Dung', 'dung@123', 'Team Member'),
+('member3', 'Ngo Thanh Phong', 'phong456', 'Team Member'),
+('member4', 'Pham Quang Huy', 'huyhuy', 'Team Member'),
+('member5', 'Tran Dinh Bao', 'baobao', 'Team Member'),
+('member6', 'Nguyen Thi Mai', 'mai123', 'Team Member'),
+('member7', 'Le Hoang Anh', 'hoanganh', 'Team Member'),
+('member8', 'Vu Hong Son', 'sonson', 'Team Member'),
+('member9', 'Pham Bao Chau', 'chauchau', 'Team Member'),
+('member10', 'Tran Van Hung', 'hung456', 'Team Member'),
+('member11', 'Nguyen Thanh Tam', 'tam789', 'Team Member'),
+('member12', 'Do Hoai Nam', 'namnam', 'Team Member'),
+('member13', 'Bui Van Tuan', 'tuan000', 'Team Member'),
+('member14', 'Vo Ngoc Linh', 'linhlinh', 'Team Member'),
 
 
 INSERT INTO tblStartupProjects (project_name, Description, Status, estimated_launch) VALUES

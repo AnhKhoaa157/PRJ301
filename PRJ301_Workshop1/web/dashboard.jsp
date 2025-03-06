@@ -110,14 +110,12 @@
                 String searchTerm = request.getAttribute("searchTerm")+"";
                 if (searchTerm == null) searchTerm = "";
             %>
+            <% if(AuthUtils.isFounder(session)) {%>
             <form action="MainController">
                 <input type="hidden" name="action" value="search"/>
                 Search Here: <input type="text" name="searchTerm" value="<%= searchTerm %>"/>
                 <input type="submit" value="Search"/>
             </form>
-            <%
-                if(AuthUtils.isFounder(session)){
-            %>
                 <a href="addProjects.jsp" class="add-btn">Add Project</a>
             <% }%>
             <% 
@@ -136,6 +134,7 @@
                         <% if(AuthUtils.isFounder(session)){
                         %>
                         <th>Action</th>
+                        <th>Update</th>
                         <% } %>
                     </tr>
                 </thead>
@@ -148,16 +147,18 @@
                         <td><%= sp.getDescription() %></td>
                         <td><%= sp.getStatus() %></td>
                         <td><%= sp.getEstimatedLaunch() %></td>
-                        <%
-                            if(AuthUtils.isFounder(session)){
-                        %>
+                        <% if(AuthUtils.isFounder(session)) {%>
                         <td>
                             <a href="MainController?action=delete&name=<%= sp.getProjectName() %>&searchTerm=<%= searchTerm %>">
                                 <img src="images/delete-icon-1877x2048-1t1g6f82.png" style="height: 25px" alt="delete-icon">
                             </a>
                         </td>
-                        
-                        <% }%>
+                        <td>
+                            <a href="MainController?action=update&name=<%=sp.getProjectName() %>&searchTerm=<%= searchTerm%>">
+                                <img src="images/comment-dots-solid-24.png" style="height: 25px" alt="delete-icon">
+                            </a>
+                        </td>
+                        <%}%>
                     </tr>
                     <% } %>
                 </tbody>

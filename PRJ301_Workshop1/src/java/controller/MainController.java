@@ -145,6 +145,32 @@ public class MainController extends HttpServlet {
         return url;
     }
     
+    public String processUpdate(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if(AuthUtils.isFounder(session)){
+            try{
+                boolean checkError = false;
+                String project_name = request.getParameter("projectName");
+                String description = request.getParameter("description");
+                String status = request.getParameter("status");
+                Date estimatedLaunch = Date.valueOf(request.getParameter("estimatedLaunch"));
+
+                startupProjectDTO project = new startupProjectDTO(project_name, description, status, estimatedLaunch);
+                if(!checkError){
+                    spDAO.updateProject(project);
+                    url= processSearch(request, response);
+                } else {
+                    url="updateProject.jsp";
+                    request.setAttribute("project", project);
+                }
+            } catch(Exception e){
+                
+            }
+        }
+        return url;
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -165,7 +191,9 @@ public class MainController extends HttpServlet {
                     url = processDelete(request, response);
                 } else if (action.equals("add")){
                     url = processAdd(request, response);
-                }
+                } else if (action.equals("update")) {
+                    url = processUpdate(request, response);
+                }    
             } 
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

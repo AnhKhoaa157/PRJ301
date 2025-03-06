@@ -128,4 +128,28 @@ public class startupProjectDAO implements IDAO<startupProjectDTO, String>{
             }
         return false;
     }
+    
+    public boolean updateProject(startupProjectDTO project){
+        String sql = "UPDATE tblStartupProjects SET "
+        + "[project_name] = ?, "
+        + "[Description] = ?, "
+        + "[estimated_launch] =? "
+        + "WHERE [project_name] = ?";
+        Connection conn;
+        try{
+            conn = DBUtils.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, project.getProjectName());
+            ps.setString(2, project.getDescription());
+            ps.setString(3, project.getStatus());
+            ps.setDate(4, project.getEstimatedLaunch());
+            int n = ps.executeUpdate();
+            return n>0;
+        }   catch (SQLException ex) {
+                Logger.getLogger(startupProjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(startupProjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        return false;
+    }
 }
