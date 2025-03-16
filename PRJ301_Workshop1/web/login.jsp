@@ -33,7 +33,7 @@
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 width: 300px;
                 text-align: center;
-                padding: 20px;
+                padding: 30px;
             }
 
             .Login-Title {

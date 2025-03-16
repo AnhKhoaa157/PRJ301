@@ -9,7 +9,7 @@
     }
 
     .header {
-        background-color: #2c3e50;
+        background-color: #009688;
         padding: 1rem 0;
         width: 100%;
         top: 0;
@@ -73,7 +73,7 @@
         color: #2c3e50;
     }
     
-        .user-section {
+    .user-section {
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -86,9 +86,27 @@
     }
 
     .user-name {
-        color: #3498db;
+        color: yellow;
         font-weight: bold;
     }
+    
+    .logout-btn {
+        background-color: #424242;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background-color: darkgray;
+    }
+
+
 </style>
 
 <header class="header">
@@ -98,28 +116,17 @@
     %>
     <div class="container">
         <nav class="nav">
-            <a href="#" class="logo">SHOP ONLINE</a>
-            <ul class="menu">
-                <li class="menu-item"><a href="#">Trang chủ</a></li>
-                <li class="menu-item"><a href="#">Sản phẩm</a></li>
-                <li class="menu-item"><a href="#">Giỏ hàng</a></li>
-                <li class="menu-item"><a href="#">Liên hệ</a></li>
-            </ul>
-<!--            <div class="right-section">
-                <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Tìm kiếm...">
-                    <button class="search-button">🔍</button>
-                </div>
-            </div>-->
+            <a href="#" class="logo">Online Examination</a>
+
             <%  if (AuthUtils.isLoggedIn(session)) {
                 UserDTO userHeader = AuthUtils.getUser(session);
 
             %>
                 <div class="user-section">
-                    <span class="welcome-text">Xin chào, <span class="user-name"><%=userHeader.getName()%></span>!</span>
+                    <span class="welcome-text">Xin chào, <span class="user-name"><%=userHeader.getFullName()%></span>!</span>
                     <form action="MainController" method="post" style="margin: 0;">
                         <input type="hidden" name="action" value="logout"/>
-                        <input type="submit" value="Đăng xuất" class="logout-btn"/>
+                        <button type="submit" class="logout-btn">Đăng xuất</button>
                     </form>
                 </div>
             <%}%>

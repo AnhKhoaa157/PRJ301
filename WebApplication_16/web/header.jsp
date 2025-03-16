@@ -1,6 +1,13 @@
-<%@page import="dto.UserDTO"%>
+<%-- 
+    Document   : header
+    Created on : Mar 5, 2025, 9:31:18 PM
+    Author     : LENOVO
+--%>
+
 <%@page import="utils.AuthUtils"%>
+<%@page import="dto.UserDTO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <style>
     * {
         margin: 0;
@@ -72,8 +79,9 @@
         cursor: pointer;
         color: #2c3e50;
     }
-    
-        .user-section {
+
+    /* Styles for welcome and logout */
+    .user-section {
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -89,41 +97,57 @@
         color: #3498db;
         font-weight: bold;
     }
+
+    .logout-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .logout-btn:hover {
+        background-color: #c0392b;
+    }
+
+    /* Adjust layout for user section */
+    .right-section {
+        display: flex;
+        align-items: center;
+    }
 </style>
 
 <header class="header">
-    
     <%
-        int x = 100;
+
     %>
     <div class="container">
         <nav class="nav">
             <a href="#" class="logo">SHOP ONLINE</a>
             <ul class="menu">
-                <li class="menu-item"><a href="#">Trang chủ</a></li>
+                <li class="menu-item"><a href="index.jsp">Trang chủ</a></li>
                 <li class="menu-item"><a href="#">Sản phẩm</a></li>
                 <li class="menu-item"><a href="#">Giỏ hàng</a></li>
                 <li class="menu-item"><a href="#">Liên hệ</a></li>
             </ul>
-<!--            <div class="right-section">
+            <div class="right-section">
                 <div class="search-bar">
                     <input type="text" class="search-input" placeholder="Tìm kiếm...">
                     <button class="search-button">🔍</button>
                 </div>
-            </div>-->
-            <%  if (AuthUtils.isLoggedIn(session)) {
-                UserDTO userHeader = AuthUtils.getUser(session);
-
-            %>
+                <c:if test="${not empty sessionScope.user}">
                 <div class="user-section">
-                    <span class="welcome-text">Xin chào, <span class="user-name"><%=userHeader.getName()%></span>!</span>
+                    <span class="welcome-text">Xin chào, <span class="user-name">${user.fullName}</span>!</span>
                     <form action="MainController" method="post" style="margin: 0;">
                         <input type="hidden" name="action" value="logout"/>
                         <input type="submit" value="Đăng xuất" class="logout-btn"/>
                     </form>
                 </div>
-            <%}%>
+                </c:if>
+            </div>
         </nav>
     </div>
 </header>
-    

@@ -1,5 +1,11 @@
+<%-- 
+    Document   : dashboard
+    Created on : Mar 14, 2025, 11:18:19 AM
+    Author     : LENOVO
+--%>
+
+<%@page import="dto.ExamCategoriesDTO"%>
 <%@page import="utils.AuthUtils"%>
-<%@page import="dto.startupProjectDTO"%>
 <%@page import="java.util.List"%>
 <%@page import="dto.UserDTO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -11,7 +17,7 @@
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
+                background-color: #FEFEFE;
                 margin: 0;
                 padding: 0;
                 text-align: left;
@@ -23,6 +29,31 @@
             form {
                 margin-top: 20px;
             }
+            
+            .user-container span{
+                color: gray;
+                font-size: 24px;
+            }
+            
+            .user-name {
+                background: linear-gradient(to right, #f7971e, #ffd200);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                -webkit-text-fill-color: transparent;
+                font-weight: bold; /* Optional */
+                font-size: 18px; /* Optional, adjust as needed */
+            }
+            
+           .divider {
+                border: none;
+                height: 10px;
+                background: linear-gradient(to right, #ff5722, #007bff);
+                margin: 0 auto;
+                width: 100%; /* Hoặc % tùy theo ý */
+                opacity: 0.7;
+            }
+            
             .add-btn {
                 display: inline-block;
                 background-color: #007bff;
@@ -74,19 +105,19 @@
             .logout-btn:hover {
                 background: #c82333;
             }
-            .project-table {
+            .form-table {
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 20px;
             }
 
-            .project-table th, .project-table td {
+            .form-table th, .form-table td {
                 border: 1px solid #ddd;
                 padding: 8px;
                 text-align: left;
             }
 
-            .project-table th {
+            .form-table th {
                 background-color: #f2f2f2;
                 font-weight: bold;
             }
@@ -95,75 +126,58 @@
     <body>
         <%@include file="header.jsp"%>
         <div style="min-height: 500px; padding: 10px">
-            <% 
+            <%
                 UserDTO user = (session != null) ? (UserDTO) session.getAttribute("user") : null;
                 if (user != null) {
+                    String searchTerm = (request.getAttribute("searchTerm") != null) ? request.getAttribute("searchTerm").toString() : "";
+                    List<ExamCategoriesDTO> examsCategories = (List<ExamCategoriesDTO>) request.getAttribute("examsCategories");
+                    if (examsCategories != null && AuthUtils.isLoggedIn(session)) {
+                        UserDTO role = AuthUtils.getUser(session);
             %>
-            
-            <% 
-                String searchTerm = request.getAttribute("searchTerm")+"";
-                if (searchTerm == null) searchTerm = "";
-            %>
-            <% if(AuthUtils.isFounder(session)) {%>
-            <form action="MainController">
-                <input type="hidden" name="action" value="search"/>
-                Search Here: <input type="text" name="searchTerm" value="<%= searchTerm %>"/>
-                <input type="submit" value="Search"/>
-            </form>
-                <a href="addProjects.jsp" class="add-btn">Add Project</a>
-            <% }%>
-            <% 
-                List<startupProjectDTO> projects = (List<startupProjectDTO>) request.getAttribute("projects");
-                if (request.getAttribute("projects") != null) {
-
-            %>
-            <table class="project-table">
+            <div class="user-container">
+                <span class="welcome-text">Login as <span style="color: blue" class="user-name"><%= role.getRoleID() %></span>!</span>
+            </div>
+            <hr class="divider">
+            <h1 class="Exams-Categories-Title">Exams Categories</h1>
+            <table class="form-table">
                 <thead>
                     <tr>
-                        <th>Project ID</th>
-                        <th>Project Name</th>
+                        <th>CategoryID</th>
+                        <th>CategoryName</th>
                         <th>Description</th>
-                        <th>Status</th>
-                        <th>Estimated Launch</th>
-                        <% if(AuthUtils.isFounder(session)){
-                        %>
                         <th>Action</th>
-                        <th>Update</th>
-                        <% } %>
                     </tr>
                 </thead>
                 <tbody>
-                    <% for (startupProjectDTO sp : projects) { 
+                    <%
+                        for (ExamCategoriesDTO exct : examsCategories) {
                     %>
-                    <tr>
-                        <td><%= sp.getProjectId() %></td>
-                        <td><%= sp.getProjectName() %></td>
-                        <td><%= sp.getDescription() %></td>
-                        <td><%= sp.getStatus() %></td>
-                        <td><%= sp.getEstimatedLaunch() %></td>
-                        <% if(AuthUtils.isFounder(session)) {%>
-                        <td>
-                            <a href="MainController?action=delete&name=<%= sp.getProjectName() %>&searchTerm=<%= searchTerm %>">
-                                <img src="images/delete-icon-1877x2048-1t1g6f82.png" style="height: 25px" alt="delete-icon">
-                            </a>
-                        </td>
-                        <td>
-                            <a href="MainController?action=update&name=<%=sp.getProjectName() %>&searchTerm=<%= searchTerm%>">
-                                <img src="images/comment-dots-solid-24.png" style="height: 25px" alt="delete-icon">
-                            </a>
-                        </td>
-                        <%}%>
-                    </tr>
-                    <% } %>
+                        <tr>
+                            <td><%= exct.getCategoryID() %></td>
+                            <td><%= exct.getCategoryName() %></td>
+                            <td><%= exct.getDescription() %></td>
+                            <td>
+                                <a href="ExamController?action=viewExams&categoryID=<%= exct.getCategoryID() %>">View Exams</a>
+                            </td>
+                        </tr>
+                    <%
+                        }
+                    %>
                 </tbody>
             </table>
-            <% } else { %>
+            <%
+                    } else {
+            %>
                 <p>No projects found.</p>
-            <% } %>
-            
-            <% } else { %>
+            <%
+                    }
+                } else {
+            %>
                 <p>You do not have permission to access this content.</p>
-            <% } %>
+            <%
+                }
+            %>
+
         </div>
         <%@include file="footer.jsp"%>
     </body>
